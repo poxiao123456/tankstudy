@@ -15,17 +15,17 @@ import com.poxiao.tank.enums.Group;
 public class DefaultFactory extends GameFactory {
 
     @Override
-    public GameObject createTank(int x, int y, Dir dir, Group group, GameModel gm) {
-        return new Tank(x, y, dir, group, gm);
+    public GameObject createTank(int x, int y, Dir dir, Group group) {
+        return new Tank(x, y, dir, group);
     }
 
     @Override
-    public GameObject createExplode(int x, int y, GameModel gm) {
-        return new Explode(x, y, gm);
+    public GameObject createExplode(int x, int y) {
+        return new Explode(x, y);
     }
 
     @Override
-    public GameObject createBullet(int x, int y, Dir dir, Group group, GameModel gm) {
-        return new Bullet(x, y, dir, group, gm);
+    public GameObject createBullet(int x, int y, Dir dir, Group group) {
+        return new Bullet(x, y, dir, group);
     }
 }

@@ -8,7 +8,7 @@ import com.poxiao.tank.util.ResourceMgr;
 import java.awt.*;
 
 /**
- * @author qinqi
+ * @author qq
  * @date 2020/11/19
  */
 public class Bullet extends GameObject {
@@ -17,26 +17,33 @@ public class Bullet extends GameObject {
     private Dir dir;
     private Group group = Group.BAD;
     private Rectangle rectangle = new Rectangle();
-    private GameModel gm;
     private static int WIDTH = ResourceMgr.bulletD.getWidth();
     private static int HEIGHT = ResourceMgr.bulletD.getHeight();
 
     public Bullet() {
     }
 
-    public Bullet(int x, int y, Dir dir,Group group,GameModel gm) {
+    public Bullet(int x, int y, Dir dir,Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
-        this.gm = gm;
 
         rectangle.x = x;
         rectangle.y = y;
         rectangle.width = WIDTH;
         rectangle.height = HEIGHT;
 
-        gm.add(this);
+        GameModel.getInstance().add(this);
+    }
+
+
+    public Rectangle getRectangle() {
+        return rectangle;
+    }
+
+    public void setRectangle(Rectangle rectangle) {
+        this.rectangle = rectangle;
     }
 
     public static int getWIDTH() {
@@ -135,24 +142,8 @@ public class Bullet extends GameObject {
         }
     }
 
-    public boolean collideWith(Tank tank) {
-        if(this.group == tank.getGroup()) {
-            return false;
-        }
-
-        if(rectangle.intersects(tank.getRectangle())) {
-            tank.die();
-            die();
-            int eX = tank.getX() + Tank.getWIDTH()/2 - Explode.getWIDTH()/2;
-            int eY = tank.getY() + Tank.getHEIGHT()/2 - Explode.getHEIGHT()/2;
-            new Explode(eX, eY, gm);
-            return true;
-        }
-        return false;
-    }
-
-    private void die() {
-        gm.remove(this);
+    public void die() {
+        GameModel.getInstance().remove(this);
     }
 
 }

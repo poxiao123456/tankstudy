@@ -23,7 +23,6 @@ public class RectTank extends GameObject {
     private Dir dir;
     private boolean moving = true;
     private TankFrame tankFrame;
-    private GameModel gm;
     private Group group = Group.BAD;
     private Rectangle rectangle = new Rectangle();
     private FireStrategy fireStrategy;
@@ -35,12 +34,11 @@ public class RectTank extends GameObject {
     public RectTank() {
     }
 
-    public RectTank(int x, int y, Dir dir, Group group, GameModel gm) {
+    public RectTank(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
-        this.gm = gm;
 
         rectangle.x = x;
         rectangle.y = y;
@@ -166,6 +164,6 @@ public class RectTank extends GameObject {
     }
 
     public void die() {
-        gm.remove(this);
+        GameModel.getInstance().remove(this);
     }
 }

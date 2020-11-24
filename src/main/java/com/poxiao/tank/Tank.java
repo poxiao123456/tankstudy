@@ -17,12 +17,12 @@ import java.util.Random;
  */
 public class Tank extends GameObject {
 
+    private int oldX, oldY;
     private static final int SPEED = 2;
     private Dir dir;
     private boolean moving = true;
     private Group group = Group.BAD;
     private Rectangle rectangle = new Rectangle();
-    private GameModel gm;
     private FireStrategy fireStrategy;
     private static int HEIGHT = ResourceMgr.goodTankU.getHeight();
     private static int WIDTH = ResourceMgr.goodTankU.getWidth();
@@ -32,12 +32,11 @@ public class Tank extends GameObject {
     public Tank() {
     }
 
-    public Tank(int x, int y, Dir dir,Group group,GameModel gm) {
+    public Tank(int x, int y, Dir dir,Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
-        this.gm = gm;
 
         rectangle.x = x;
         rectangle.y = y;
@@ -56,6 +55,8 @@ public class Tank extends GameObject {
         } else {
             fireStrategy = new DefaultFireStrategy();
         }
+
+        GameModel.getInstance().add(this);
     }
 
     public static int getHEIGHT() {
@@ -72,14 +73,6 @@ public class Tank extends GameObject {
 
     public static void setWIDTH(int WIDTH) {
         Tank.WIDTH = WIDTH;
-    }
-
-    public GameModel getGm() {
-        return gm;
-    }
-
-    public void setGm(GameModel gm) {
-        this.gm = gm;
     }
 
     public Group getGroup() {
@@ -165,6 +158,10 @@ public class Tank extends GameObject {
     }
 
     private void move() {
+        //记录移动之前的位置
+        oldX = x;
+        oldY = y;
+
         switch (dir) {
             case UP:
                 y-=SPEED;
@@ -220,10 +217,15 @@ public class Tank extends GameObject {
     }
 
     public void die() {
-        gm.remove(this);
+        GameModel.getInstance().remove(this);
     }
 
     public void stop() {
         moving = false;
+    }
+
+    public void back() {
+        x = oldX;
+        y = oldY;
     }
 }

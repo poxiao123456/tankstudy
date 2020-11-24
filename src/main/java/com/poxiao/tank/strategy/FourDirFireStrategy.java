@@ -1,6 +1,7 @@
 package com.poxiao.tank.strategy;
 
 import com.poxiao.tank.Bullet;
+import com.poxiao.tank.GameModel;
 import com.poxiao.tank.cor.GameObject;
 import com.poxiao.tank.enums.Dir;
 import com.poxiao.tank.enums.Group;
@@ -20,7 +21,7 @@ public class FourDirFireStrategy implements FireStrategy{
 
         Dir[] dirs = Dir.values();
         for (Dir dir : dirs) {
-            tank.getGm().gf.createBullet(bX, bY, dir, tank.getGroup(), tank.getGm());
+            GameModel.getInstance().gf.createBullet(bX, bY, dir, tank.getGroup());
         }
 
         if(tank.getGroup() == Group.GOOD) {

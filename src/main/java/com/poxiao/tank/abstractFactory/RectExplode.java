@@ -16,15 +16,13 @@ public class RectExplode extends GameObject {
     private static int HEIGHT = ResourceMgr.explodes[0].getHeight();
     private static int WIDTH = ResourceMgr.explodes[0].getWidth();
     private TankFrame tf = null;
-    private GameModel gm;
     private int step = 0;
 
 
 
-    public RectExplode(int x, int y, GameModel gm) {
+    public RectExplode(int x, int y) {
         this.x = x;
         this.y = y;
-        this.gm = gm;
 
         new Thread(()->new Audio("audio/explode.wav").play()).start();
     }
@@ -61,6 +59,6 @@ public class RectExplode extends GameObject {
     }
 
     private void die() {
-        gm.remove(this);
+        GameModel.getInstance().remove(this);
     }
 }

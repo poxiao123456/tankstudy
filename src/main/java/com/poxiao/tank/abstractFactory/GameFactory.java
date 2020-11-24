@@ -11,7 +11,7 @@ import com.poxiao.tank.enums.Group;
  */
 public abstract class GameFactory {
 
-    public abstract GameObject createTank(int x, int y, Dir dir, Group group, GameModel gm);
-    public abstract GameObject createExplode(int x, int y, GameModel gm);
-    public abstract GameObject createBullet(int x, int y, Dir dir, Group group, GameModel gm);
+    public abstract GameObject createTank(int x, int y, Dir dir, Group group);
+    public abstract GameObject createExplode(int x, int y);
+    public abstract GameObject createBullet(int x, int y, Dir dir, Group group);
 }

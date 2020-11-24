@@ -19,7 +19,6 @@ public class RectBullet extends GameObject {
     private Group group = Group.BAD;
     private Rectangle rectangle = new Rectangle();
     private TankFrame tankFrame;
-    private GameModel gm;
     public static int WIDTH = ResourceMgr.bulletD.getWidth();
     public static int HEIGHT = ResourceMgr.bulletD.getHeight();
 
@@ -27,19 +26,18 @@ public class RectBullet extends GameObject {
     public RectBullet() {
     }
 
-    public RectBullet(int x, int y, Dir dir,Group group,GameModel gm) {
+    public RectBullet(int x, int y, Dir dir,Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
-        this.gm = gm;
 
         rectangle.x = x;
         rectangle.y = y;
         rectangle.width = WIDTH;
         rectangle.height = HEIGHT;
 
-        gm.add(this);
+        GameModel.getInstance().add(this);
     }
 
     public Group getGroup() {
@@ -122,12 +120,12 @@ public class RectBullet extends GameObject {
             int eX = tank.getX() + Tank.getWIDTH()/2 - Explode.getWIDTH()/2;
             int eY = tank.getY() + Tank.getHEIGHT()/2 - Explode.getHEIGHT()/2;
 
-            gm.add(new Explode(eX, eY, gm));
+            GameModel.getInstance().add(new Explode(eX, eY));
         }
 
     }
 
     private void die() {
-        gm.remove(this);
+        GameModel.getInstance().remove(this);
     }
 }

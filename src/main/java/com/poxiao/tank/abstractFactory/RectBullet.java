@@ -1,7 +1,7 @@
 package com.poxiao.tank.abstractFactory;
 
 import com.poxiao.tank.*;
-import com.poxiao.tank.cor.GameObject;
+import com.poxiao.tank.GameObject;
 import com.poxiao.tank.enums.Dir;
 import com.poxiao.tank.enums.Group;
 import com.poxiao.tank.util.ResourceMgr;

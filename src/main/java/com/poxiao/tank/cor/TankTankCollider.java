@@ -1,5 +1,6 @@
 package com.poxiao.tank.cor;
 
+import com.poxiao.tank.GameObject;
 import com.poxiao.tank.Tank;
 
 /**

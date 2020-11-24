@@ -1,6 +1,6 @@
 package com.poxiao.tank.decorator;
 
-import com.poxiao.tank.cor.GameObject;
+import com.poxiao.tank.GameObject;
 
 import java.awt.*;
 

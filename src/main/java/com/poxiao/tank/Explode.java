@@ -1,6 +1,5 @@
 package com.poxiao.tank;
 
-import com.poxiao.tank.cor.GameObject;
 import com.poxiao.tank.util.Audio;
 import com.poxiao.tank.util.ResourceMgr;
 

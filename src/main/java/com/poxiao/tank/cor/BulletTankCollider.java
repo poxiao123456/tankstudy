@@ -2,6 +2,7 @@ package com.poxiao.tank.cor;
 
 import com.poxiao.tank.Bullet;
 import com.poxiao.tank.Explode;
+import com.poxiao.tank.GameObject;
 import com.poxiao.tank.Tank;
 
 /**

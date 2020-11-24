@@ -1,10 +1,7 @@
 package com.poxiao.tank.strategy;
 
 import com.poxiao.tank.Bullet;
-import com.poxiao.tank.GameModel;
-import com.poxiao.tank.cor.GameObject;
-import com.poxiao.tank.decorator.RectDecorator;
-import com.poxiao.tank.decorator.TailDecotator;
+import com.poxiao.tank.GameObject;
 import com.poxiao.tank.enums.Group;
 import com.poxiao.tank.Tank;
 import com.poxiao.tank.util.Audio;

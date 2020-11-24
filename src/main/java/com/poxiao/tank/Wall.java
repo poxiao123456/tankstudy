@@ -1,7 +1,5 @@
 package com.poxiao.tank;
 
-import com.poxiao.tank.cor.GameObject;
-
 import java.awt.*;
 
 /**

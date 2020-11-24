@@ -1,5 +1,7 @@
 package com.poxiao.tank.cor;
 
+import com.poxiao.tank.GameObject;
+
 import java.util.LinkedList;
 import java.util.List;
 

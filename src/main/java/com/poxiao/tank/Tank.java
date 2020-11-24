@@ -1,6 +1,5 @@
 package com.poxiao.tank;
 
-import com.poxiao.tank.cor.GameObject;
 import com.poxiao.tank.enums.Dir;
 import com.poxiao.tank.enums.Group;
 import com.poxiao.tank.observer.TankFireEvent;

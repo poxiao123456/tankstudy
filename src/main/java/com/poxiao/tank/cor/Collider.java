@@ -1,5 +1,7 @@
 package com.poxiao.tank.cor;
 
+import com.poxiao.tank.GameObject;
+
 /**
  * @author qq
  * @date 2020/11/24

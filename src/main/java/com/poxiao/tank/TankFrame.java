@@ -91,6 +91,12 @@ public class TankFrame extends Frame {
                 case KeyEvent.VK_RIGHT:
                     bR = true;
                     break;
+                case KeyEvent.VK_S:
+                    gm.save();
+                    break;
+                case KeyEvent.VK_L:
+                    gm.load();
+                    break;
                 default:
                     break;
             }

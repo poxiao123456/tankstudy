@@ -3,12 +3,12 @@ package com.poxiao.tank;
 import com.poxiao.tank.abstractFactory.DefaultFactory;
 import com.poxiao.tank.abstractFactory.GameFactory;
 import com.poxiao.tank.cor.ColliderChain;
-import com.poxiao.tank.cor.GameObject;
 import com.poxiao.tank.enums.Dir;
 import com.poxiao.tank.enums.Group;
 import com.poxiao.tank.util.PropertyMgr;
 
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +79,45 @@ public class GameModel {
                 GameObject o2 = objects.get(j);
                 chain.collide(o1, o2);
             }
+        }
+    }
+
+    public void save() {
+        File f = new File("C:\\Users\\25311\\Desktop\\tank.data");
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(new FileOutputStream(f));
+            oos.writeObject(myTank);
+            oos.writeObject(objects);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void load() {
+        File f = new File("C:\\Users\\25311\\Desktop\\tank.data");
+        try {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
+            myTank = (Tank)ois.readObject();
+            objects = (List)ois.readObject();
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }

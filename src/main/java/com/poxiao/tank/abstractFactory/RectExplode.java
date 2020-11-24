@@ -58,6 +58,16 @@ public class RectExplode extends GameObject {
         g.setColor(c);
     }
 
+    @Override
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return HEIGHT;
+    }
+
     private void die() {
         GameModel.getInstance().remove(this);
     }

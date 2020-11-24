@@ -66,6 +66,16 @@ public class Explode extends GameObject {
         }
     }
 
+    @Override
+    public int getWidth() {
+        return WIDTH;
+    }
+
+    @Override
+    public int getHeight() {
+        return HEIGHT;
+    }
+
     private void die() {
         GameModel.getInstance().remove(this);
     }

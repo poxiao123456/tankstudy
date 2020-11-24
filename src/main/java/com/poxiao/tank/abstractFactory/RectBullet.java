@@ -1,4 +1,10 @@
-package com.poxiao.tank;
+package com.poxiao.tank.abstractFactory;
+
+import com.poxiao.tank.*;
+import com.poxiao.tank.cor.GameObject;
+import com.poxiao.tank.enums.Dir;
+import com.poxiao.tank.enums.Group;
+import com.poxiao.tank.util.ResourceMgr;
 
 import java.awt.*;
 
@@ -6,16 +12,14 @@ import java.awt.*;
  * @author qinqi
  * @date 2020/11/23
  */
-public class RectBullet extends BaseBullet{
+public class RectBullet extends GameObject {
 
-    private int x;
-    private int y;
     private static final int SPEED = 6;
     private Dir dir;
     private Group group = Group.BAD;
-    Rectangle rectangle = new Rectangle();
-    TankFrame tankFrame;
-    GameModel gm;
+    private Rectangle rectangle = new Rectangle();
+    private TankFrame tankFrame;
+    private GameModel gm;
     public static int WIDTH = ResourceMgr.bulletD.getWidth();
     public static int HEIGHT = ResourceMgr.bulletD.getHeight();
 
@@ -28,7 +32,6 @@ public class RectBullet extends BaseBullet{
         this.y = y;
         this.dir = dir;
         this.group = group;
-        //this.tankFrame = tankFrame;
         this.gm = gm;
 
         rectangle.x = x;
@@ -36,7 +39,7 @@ public class RectBullet extends BaseBullet{
         rectangle.width = WIDTH;
         rectangle.height = HEIGHT;
 
-        gm.bullets.add(this);
+        gm.add(this);
     }
 
     public Group getGroup() {
@@ -103,12 +106,11 @@ public class RectBullet extends BaseBullet{
         rectangle.x = this.x;
         rectangle.y = this.y;
 
-        if(x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) {
+        if(x < 0 || y < 0 || x > TankFrame.getGameWidth() || y > TankFrame.getGameHeight()) {
             die();
         }
     }
 
-    @Override
     public void collideWith(BaseTank tank) {
         if(this.group == tank.getGroup()) {
             return;
@@ -117,14 +119,15 @@ public class RectBullet extends BaseBullet{
         if(rectangle.intersects(tank.rectangle)) {
             tank.die();
             die();
-            int eX = tank.getX() + Tank.WIDTH/2 - Explode.WIDTH/2;
-            int eY = tank.getY() + Tank.HEIGHT/2 - Explode.HEIGHT/2;
-            gm.explodes.add(new Explode(eX, eY, gm));
+            int eX = tank.getX() + Tank.getWIDTH()/2 - Explode.getWIDTH()/2;
+            int eY = tank.getY() + Tank.getHEIGHT()/2 - Explode.getHEIGHT()/2;
+
+            gm.add(new Explode(eX, eY, gm));
         }
 
     }
 
     private void die() {
-        gm.bullets.remove(this);
+        gm.remove(this);
     }
 }

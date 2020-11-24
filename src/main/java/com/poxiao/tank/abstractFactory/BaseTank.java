@@ -1,4 +1,6 @@
-package com.poxiao.tank;
+package com.poxiao.tank.abstractFactory;
+
+import com.poxiao.tank.enums.Group;
 
 import java.awt.*;
 

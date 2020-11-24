@@ -1,30 +1,45 @@
 package com.poxiao.tank;
 
+import com.poxiao.tank.cor.GameObject;
+import com.poxiao.tank.util.Audio;
+import com.poxiao.tank.util.ResourceMgr;
+
 import java.awt.*;
 
 /**
  * @author qinqi
  * @date 2020/11/19
  */
-public class Explode extends BaseExplode{
+public class Explode extends GameObject {
 
-    private int x, y;
-    public static int HEIGHT = ResourceMgr.explodes[0].getHeight();
-    public static int WIDTH = ResourceMgr.explodes[0].getWidth();
-    //TankFrame tf = null;
-    GameModel gm;
+    private static int HEIGHT = ResourceMgr.explodes[0].getHeight();
+    private static int WIDTH = ResourceMgr.explodes[0].getWidth();
+    private GameModel gm;
     private int step = 0;
-
-
-    //private boolean living = true;
 
     public Explode(int x, int y, GameModel gm) {
         this.x = x;
         this.y = y;
-        //this.tf = tf;
         this.gm = gm;
+        gm.add(this);
 
         new Thread(()->new Audio("audio/explode.wav").play()).start();
+    }
+
+    public static int getHEIGHT() {
+        return HEIGHT;
+    }
+
+    public static void setHEIGHT(int HEIGHT) {
+        Explode.HEIGHT = HEIGHT;
+    }
+
+    public static int getWIDTH() {
+        return WIDTH;
+    }
+
+    public static void setWIDTH(int WIDTH) {
+        Explode.WIDTH = WIDTH;
     }
 
     public int getX() {
@@ -43,14 +58,6 @@ public class Explode extends BaseExplode{
         this.y = y;
     }
 
-//    public boolean isLiving() {
-//        return living;
-//    }
-//
-//    public void setLiving(boolean living) {
-//        this.living = living;
-//    }
-
     @Override
     public void paint(Graphics g) {
 
@@ -62,6 +69,6 @@ public class Explode extends BaseExplode{
     }
 
     private void die() {
-        gm.explodes.remove(this);
+        gm.remove(this);
     }
 }

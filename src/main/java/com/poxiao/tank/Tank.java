@@ -1,5 +1,13 @@
 package com.poxiao.tank;
 
+import com.poxiao.tank.cor.GameObject;
+import com.poxiao.tank.enums.Dir;
+import com.poxiao.tank.enums.Group;
+import com.poxiao.tank.strategy.DefaultFireStrategy;
+import com.poxiao.tank.strategy.FireStrategy;
+import com.poxiao.tank.util.PropertyMgr;
+import com.poxiao.tank.util.ResourceMgr;
+
 import java.awt.*;
 import java.util.Random;
 
@@ -7,22 +15,17 @@ import java.util.Random;
  * @author qinqi
  * @date 2020/10/30
  */
-public class Tank extends BaseTank{
+public class Tank extends GameObject {
 
-    int x;
-    int y;
     private static final int SPEED = 2;
-    Dir dir;
+    private Dir dir;
     private boolean moving = true;
-    //Group group = Group.BAD;
-    //Rectangle rectangle = new Rectangle();
-    TankFrame tankFrame;
-    GameModel gm;
+    private Group group = Group.BAD;
+    private Rectangle rectangle = new Rectangle();
+    private GameModel gm;
     private FireStrategy fireStrategy;
-    public static int HEIGHT = ResourceMgr.goodTankU.getHeight();
-    public static int WIDTH = ResourceMgr.goodTankU.getWidth();
-
-    //private boolean living = true;
+    private static int HEIGHT = ResourceMgr.goodTankU.getHeight();
+    private static int WIDTH = ResourceMgr.goodTankU.getWidth();
     private Random random = new Random();
 
 
@@ -34,7 +37,6 @@ public class Tank extends BaseTank{
         this.y = y;
         this.dir = dir;
         this.group = group;
-        //this.tankFrame = tankFrame;
         this.gm = gm;
 
         rectangle.x = x;
@@ -43,7 +45,7 @@ public class Tank extends BaseTank{
         rectangle.height = HEIGHT;
 
         if(group == Group.GOOD) {
-            String goodFSName = (String)PropertyMgr.get("goodFS");
+            String goodFSName = (String) PropertyMgr.get("goodFS");
 
             try {
                 fireStrategy = (FireStrategy)Class.forName(goodFSName).getDeclaredConstructor().newInstance();
@@ -56,31 +58,46 @@ public class Tank extends BaseTank{
         }
     }
 
-    public TankFrame getTankFrame() {
-        return tankFrame;
+    public static int getHEIGHT() {
+        return HEIGHT;
     }
 
-    public void setTankFrame(TankFrame tankFrame) {
-        this.tankFrame = tankFrame;
+    public static void setHEIGHT(int HEIGHT) {
+        Tank.HEIGHT = HEIGHT;
     }
 
-    //    public Group getGroup() {
-//        return group;
-//    }
-//
-//    public void setGroup(Group group) {
-//        this.group = group;
-//    }
+    public static int getWIDTH() {
+        return WIDTH;
+    }
 
-//    public boolean isLiving() {
-////        return living;
-////    }
-////
-////    public void setLiving(boolean living) {
-////        this.living = living;
-////    }
+    public static void setWIDTH(int WIDTH) {
+        Tank.WIDTH = WIDTH;
+    }
 
-    @Override
+    public GameModel getGm() {
+        return gm;
+    }
+
+    public void setGm(GameModel gm) {
+        this.gm = gm;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
+    public Rectangle getRectangle() {
+        return rectangle;
+    }
+
+    public void setRectangle(Rectangle rectangle) {
+        this.rectangle = rectangle;
+    }
+
     public int getX() {
         return x;
     }
@@ -89,7 +106,6 @@ public class Tank extends BaseTank{
         this.x = x;
     }
 
-    @Override
     public int getY() {
         return y;
     }
@@ -186,11 +202,11 @@ public class Tank extends BaseTank{
         if (this.y < 28) {
             y = 28;
         }
-        if (this.x > TankFrame.GAME_WIDTH- Tank.WIDTH -2) {
-            x = TankFrame.GAME_WIDTH - Tank.WIDTH -2;
+        if (this.x > TankFrame.getGameWidth()- Tank.WIDTH -2) {
+            x = TankFrame.getGameWidth() - Tank.WIDTH -2;
         }
-        if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT -2 ) {
-            y = TankFrame.GAME_HEIGHT -Tank.HEIGHT -2;
+        if (this.y > TankFrame.getGameHeight() - Tank.HEIGHT -2 ) {
+            y = TankFrame.getGameHeight() -Tank.HEIGHT -2;
         }
     }
 
@@ -200,24 +216,14 @@ public class Tank extends BaseTank{
     }
 
     public void fire() {
-        //fireStrategy.fire(this);
-
-        int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
-        int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
-
-        Dir[] dirs = Dir.values();
-        for(Dir dir : dirs) {
-            gm.gf.createBullet(bX, bY, dir, group, gm);
-        }
-
-        if(group == Group.GOOD) {
-
-            new Thread(()->new Audio("audio/tank_fire.wav").play()).start();
-        }
+        fireStrategy.fire(this);
     }
 
-    @Override
     public void die() {
-        gm.tanks.remove(this);
+        gm.remove(this);
+    }
+
+    public void stop() {
+        moving = false;
     }
 }

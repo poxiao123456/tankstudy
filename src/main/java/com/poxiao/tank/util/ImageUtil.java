@@ -1,4 +1,4 @@
-package com.poxiao.tank;
+package com.poxiao.tank.util;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

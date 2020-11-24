@@ -1,4 +1,14 @@
-package com.poxiao.tank;
+package com.poxiao.tank.abstractFactory;
+
+import com.poxiao.tank.*;
+import com.poxiao.tank.cor.GameObject;
+import com.poxiao.tank.enums.Dir;
+import com.poxiao.tank.enums.Group;
+import com.poxiao.tank.strategy.DefaultFireStrategy;
+import com.poxiao.tank.strategy.FireStrategy;
+import com.poxiao.tank.util.Audio;
+import com.poxiao.tank.util.PropertyMgr;
+import com.poxiao.tank.util.ResourceMgr;
 
 import java.awt.*;
 import java.util.Random;
@@ -7,32 +17,29 @@ import java.util.Random;
  * @author qinqi
  * @date 2020/11/23
  */
-public class RectTank extends BaseTank{
+public class RectTank extends GameObject {
 
-
-    int x;
-    int y;
     private static final int SPEED = 2;
-    Dir dir;
+    private Dir dir;
     private boolean moving = true;
-    TankFrame tankFrame;
-    GameModel gm;
+    private TankFrame tankFrame;
+    private GameModel gm;
+    private Group group = Group.BAD;
+    private Rectangle rectangle = new Rectangle();
     private FireStrategy fireStrategy;
-    public static int HEIGHT = ResourceMgr.goodTankU.getHeight();
-    public static int WIDTH = ResourceMgr.goodTankU.getWidth();
-
+    private static int HEIGHT = ResourceMgr.goodTankU.getHeight();
+    private static int WIDTH = ResourceMgr.goodTankU.getWidth();
     private Random random = new Random();
 
 
     public RectTank() {
     }
 
-    public RectTank(int x, int y, Dir dir,Group group,GameModel gm) {
+    public RectTank(int x, int y, Dir dir, Group group, GameModel gm) {
         this.x = x;
         this.y = y;
         this.dir = dir;
         this.group = group;
-        //this.tankFrame = tankFrame;
         this.gm = gm;
 
         rectangle.x = x;
@@ -41,7 +48,7 @@ public class RectTank extends BaseTank{
         rectangle.height = HEIGHT;
 
         if(group == Group.GOOD) {
-            String goodFSName = (String)PropertyMgr.get("goodFS");
+            String goodFSName = (String) PropertyMgr.get("goodFS");
 
             try {
                 fireStrategy = (FireStrategy)Class.forName(goodFSName).getDeclaredConstructor().newInstance();
@@ -62,7 +69,6 @@ public class RectTank extends BaseTank{
         this.tankFrame = tankFrame;
     }
 
-    @Override
     public int getX() {
         return x;
     }
@@ -71,7 +77,6 @@ public class RectTank extends BaseTank{
         this.x = x;
     }
 
-    @Override
     public int getY() {
         return y;
     }
@@ -143,11 +148,11 @@ public class RectTank extends BaseTank{
         if (this.y < 28) {
             y = 28;
         }
-        if (this.x > TankFrame.GAME_WIDTH- Tank.WIDTH -2) {
-            x = TankFrame.GAME_WIDTH - Tank.WIDTH -2;
+        if (this.x > TankFrame.getGameWidth()- Tank.getWIDTH() -2) {
+            x = TankFrame.getGameWidth() - Tank.getWIDTH() -2;
         }
-        if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT -2 ) {
-            y = TankFrame.GAME_HEIGHT -Tank.HEIGHT -2;
+        if (this.y > TankFrame.getGameHeight() - Tank.getHEIGHT() -2 ) {
+            y = TankFrame.getGameHeight() -Tank.getHEIGHT() -2;
         }
     }
 
@@ -157,24 +162,10 @@ public class RectTank extends BaseTank{
     }
 
     public void fire() {
-        //fireStrategy.fire(this);
-
-        int bX = this.x + RectTank.WIDTH / 2 - Bullet.WIDTH / 2;
-        int bY = this.y + RectTank.HEIGHT / 2 - Bullet.HEIGHT / 2;
-
-        Dir[] dirs = Dir.values();
-        for (Dir dir : dirs) {
-            gm.gf.createBullet(bX, bY, dir, group, gm);
-        }
-
-        if (group == Group.GOOD) {
-            new Thread(() -> new Audio("audio/tank_fire.wav").play()).start();
-        }
+        fireStrategy.fire(this);
     }
 
-
-    @Override
     public void die() {
-        gm.tanks.remove(this);
+        gm.remove(this);
     }
 }

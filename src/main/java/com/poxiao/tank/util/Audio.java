@@ -1,4 +1,4 @@
-package com.poxiao.tank;
+package com.poxiao.tank.util;
 
 import javax.sound.sampled.*;
 import java.io.IOException;

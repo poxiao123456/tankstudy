@@ -5,7 +5,7 @@ bulletSpeed=10
 gameWidth=1080
 gameHeight=720
 #fireStrategy
-goodFS=com.poxiao.tank.FourDirFireStrategy
-badFS=com.poxiao.tank.DefaultFireStrategy
+goodFS=com.poxiao.tank.strategy.FourDirFireStrategy
+badFS=com.poxiao.tank.strategy.DefaultFireStrategy
 #colliders
-colliders=com.poxiao.tank.BulletTankCollider,com.poxiao.tank.TankTankCollider
+colliders=com.poxiao.tank.cor.BulletTankCollider,com.poxiao.tank.cor.TankTankCollider

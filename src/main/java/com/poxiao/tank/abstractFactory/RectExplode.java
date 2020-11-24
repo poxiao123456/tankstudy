@@ -1,4 +1,9 @@
-package com.poxiao.tank;
+package com.poxiao.tank.abstractFactory;
+
+import com.poxiao.tank.*;
+import com.poxiao.tank.cor.GameObject;
+import com.poxiao.tank.util.Audio;
+import com.poxiao.tank.util.ResourceMgr;
 
 import java.awt.*;
 
@@ -6,13 +11,12 @@ import java.awt.*;
  * @author qinqi
  * @date 2020/11/23
  */
-public class RectExplode extends BaseExplode{
+public class RectExplode extends GameObject {
 
-    private int x, y;
-    public static int HEIGHT = ResourceMgr.explodes[0].getHeight();
-    public static int WIDTH = ResourceMgr.explodes[0].getWidth();
-    TankFrame tf = null;
-    GameModel gm;
+    private static int HEIGHT = ResourceMgr.explodes[0].getHeight();
+    private static int WIDTH = ResourceMgr.explodes[0].getWidth();
+    private TankFrame tf = null;
+    private GameModel gm;
     private int step = 0;
 
 
@@ -20,7 +24,6 @@ public class RectExplode extends BaseExplode{
     public RectExplode(int x, int y, GameModel gm) {
         this.x = x;
         this.y = y;
-        //this.tf = tf;
         this.gm = gm;
 
         new Thread(()->new Audio("audio/explode.wav").play()).start();
@@ -45,11 +48,6 @@ public class RectExplode extends BaseExplode{
     @Override
     public void paint(Graphics g) {
 
-//        g.drawImage(ResourceMgr.explodes[step++], x, y, null);
-//
-//        if(step >= ResourceMgr.explodes.length) {
-//            die();
-//        }
         Color c = g.getColor();
         g.setColor(Color.RED);
         g.fillRect(x, y, 10*step, 10*step);
@@ -63,6 +61,6 @@ public class RectExplode extends BaseExplode{
     }
 
     private void die() {
-        gm.explodes.remove(this);
+        gm.remove(this);
     }
 }

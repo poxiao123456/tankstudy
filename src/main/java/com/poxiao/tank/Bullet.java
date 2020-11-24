@@ -1,25 +1,25 @@
 package com.poxiao.tank;
 
+import com.poxiao.tank.cor.GameObject;
+import com.poxiao.tank.enums.Dir;
+import com.poxiao.tank.enums.Group;
+import com.poxiao.tank.util.ResourceMgr;
+
 import java.awt.*;
 
 /**
  * @author qinqi
  * @date 2020/11/19
  */
-public class Bullet extends BaseBullet{
+public class Bullet extends GameObject {
 
-    private int x;
-    private int y;
     private static final int SPEED = 6;
     private Dir dir;
     private Group group = Group.BAD;
-    Rectangle rectangle = new Rectangle();
-    //TankFrame tankFrame;
-    GameModel gm;
-    public static int WIDTH = ResourceMgr.bulletD.getWidth();
-    public static int HEIGHT = ResourceMgr.bulletD.getHeight();
-    //private boolean living = true;
-
+    private Rectangle rectangle = new Rectangle();
+    private GameModel gm;
+    private static int WIDTH = ResourceMgr.bulletD.getWidth();
+    private static int HEIGHT = ResourceMgr.bulletD.getHeight();
 
     public Bullet() {
     }
@@ -29,7 +29,6 @@ public class Bullet extends BaseBullet{
         this.y = y;
         this.dir = dir;
         this.group = group;
-        //this.tankFrame = tankFrame;
         this.gm = gm;
 
         rectangle.x = x;
@@ -37,7 +36,23 @@ public class Bullet extends BaseBullet{
         rectangle.width = WIDTH;
         rectangle.height = HEIGHT;
 
-        gm.bullets.add(this);
+        gm.add(this);
+    }
+
+    public static int getWIDTH() {
+        return WIDTH;
+    }
+
+    public static void setWIDTH(int WIDTH) {
+        Bullet.WIDTH = WIDTH;
+    }
+
+    public static int getHEIGHT() {
+        return HEIGHT;
+    }
+
+    public static void setHEIGHT(int HEIGHT) {
+        Bullet.HEIGHT = HEIGHT;
     }
 
     public Group getGroup() {
@@ -47,14 +62,6 @@ public class Bullet extends BaseBullet{
     public void setGroup(Group group) {
         this.group = group;
     }
-
-//    public boolean isLiving() {
-//        return living;
-//    }
-//
-//    public void setLiving(boolean living) {
-//        this.living = living;
-//    }
 
     public int getX() {
         return x;
@@ -123,30 +130,29 @@ public class Bullet extends BaseBullet{
         rectangle.x = this.x;
         rectangle.y = this.y;
 
-        if(x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) {
+        if(x < 0 || y < 0 || x > TankFrame.getGameWidth() || y > TankFrame.getGameHeight()) {
             die();
         }
     }
 
-    @Override
-    public void collideWith(BaseTank tank) {
+    public boolean collideWith(Tank tank) {
         if(this.group == tank.getGroup()) {
-            return;
+            return false;
         }
 
-        if(rectangle.intersects(tank.rectangle)) {
+        if(rectangle.intersects(tank.getRectangle())) {
             tank.die();
             die();
-            int eX = tank.getX() + Tank.WIDTH/2 - Explode.WIDTH/2;
-            int eY = tank.getY() + Tank.HEIGHT/2 - Explode.HEIGHT/2;
-            //tankFrame.explodes.add(new Explode(eX, eY, tankFrame));
-            gm.explodes.add(gm.gf.createExplode(eX, eY, gm));
+            int eX = tank.getX() + Tank.getWIDTH()/2 - Explode.getWIDTH()/2;
+            int eY = tank.getY() + Tank.getHEIGHT()/2 - Explode.getHEIGHT()/2;
+            new Explode(eX, eY, gm);
+            return true;
         }
-
+        return false;
     }
 
     private void die() {
-        gm.bullets.remove(this);
+        gm.remove(this);
     }
 
 }

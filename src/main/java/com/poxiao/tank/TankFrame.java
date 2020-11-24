@@ -1,33 +1,23 @@
 package com.poxiao.tank;
+import com.poxiao.tank.enums.Dir;
+import com.poxiao.tank.util.Audio;
+
 import	java.awt.event.KeyAdapter;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * @author qinqi
+ * @author qq
  * @date 2020/10/30
  */
 public class TankFrame extends Frame {
 
-    GameModel gm = GameModel.getInstance();
-    private static final TankFrame tf = new TankFrame();
-
-    static TankFrame getTf() {
-        return tf;
-    }
-    //    Tank myTank = new Tank(400,300, Dir.DOWN,Group.GOOD,this);
-//    List<BaseBullet> bullets = new ArrayList<>();
-//    List<BaseTank> tanks = new ArrayList<>();
-//    List<BaseExplode> explodes = new ArrayList<>();
-//
-//    public GameFactory gf = new DefaultFactory();
-
-    static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
+    private static final TankFrame INSTANCE = new TankFrame();
+    private GameModel gm = GameModel.getInstance();
+    private static final int GAME_WIDTH = 1080, GAME_HEIGHT = 960;
 
     private TankFrame() {
         setVisible(true);
@@ -46,40 +36,24 @@ public class TankFrame extends Frame {
         addKeyListener(new MyKeyListener());
     }
 
+    public static int getGameWidth() {
+        return GAME_WIDTH;
+    }
+
+    public static int getGameHeight() {
+        return GAME_HEIGHT;
+    }
+
+    public static TankFrame getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public void paint(Graphics g) {
-//        Color c = g.getColor();
-//        g.setColor(Color.white);
-//        g.drawString("子弹的数量:" + bullets.size(), 10, 60);
-//        g.drawString("坦克的数量:" + tanks.size(), 10, 80);
-//        g.drawString("爆炸的数量:" + explodes.size(), 10, 100);
-//        g.setColor(c);
-//
-//        myTank.paint(g);
-//
-//        for (int i = 0; i < tanks.size(); i++) {
-//            tanks.get(i).paint(g);
-//        }
-//
-//
-//        for(int i=0; i<bullets.size(); i++) {
-//            bullets.get(i).paint(g);
-//        }
-//
-//        for(int i=0; i<explodes.size(); i++) {
-//            explodes.get(i).paint(g);
-//        }
-//
-//        for(int i=0; i<bullets.size(); i++) {
-//            for(int j = 0; j<tanks.size(); j++) {
-//                bullets.get(i).collideWith(tanks.get(j));
-//            }
-//        }
-
         gm.paint(g);
     }
 
-    Image offScreenImage = null;
+    private Image offScreenImage = null;
     @Override
     public void update(Graphics g) {
         if(offScreenImage == null) {

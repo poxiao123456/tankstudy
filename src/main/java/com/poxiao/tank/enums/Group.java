@@ -1,4 +1,4 @@
-package com.poxiao.tank;
+package com.poxiao.tank.enums;
 
 /**
  * @author qinqi

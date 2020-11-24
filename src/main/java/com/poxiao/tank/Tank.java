@@ -3,12 +3,17 @@ package com.poxiao.tank;
 import com.poxiao.tank.cor.GameObject;
 import com.poxiao.tank.enums.Dir;
 import com.poxiao.tank.enums.Group;
+import com.poxiao.tank.observer.TankFireEvent;
+import com.poxiao.tank.observer.TankFireHandler;
+import com.poxiao.tank.observer.TankFireOberver;
 import com.poxiao.tank.strategy.DefaultFireStrategy;
 import com.poxiao.tank.strategy.FireStrategy;
 import com.poxiao.tank.util.PropertyMgr;
 import com.poxiao.tank.util.ResourceMgr;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -27,6 +32,7 @@ public class Tank extends GameObject {
     private static int HEIGHT = ResourceMgr.goodTankU.getHeight();
     private static int WIDTH = ResourceMgr.goodTankU.getWidth();
     private Random random = new Random();
+    private List<TankFireOberver> fireObservers = Arrays.asList(new TankFireHandler());
 
 
     public Tank() {
@@ -237,5 +243,12 @@ public class Tank extends GameObject {
     public void back() {
         x = oldX;
         y = oldY;
+    }
+
+    public void handleFireKey() {
+        TankFireEvent event = new TankFireEvent(this);
+        for(TankFireOberver o : fireObservers) {
+            o.actionOnFire(event);
+        }
     }
 }

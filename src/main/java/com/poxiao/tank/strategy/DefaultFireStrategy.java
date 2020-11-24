@@ -20,13 +20,13 @@ public class DefaultFireStrategy implements FireStrategy{
         int bX = tank.getX() + Tank.getWIDTH()/2 - Bullet.getWIDTH()/2;
         int bY = tank.getY() + Tank.getHEIGHT()/2 - Bullet.getHEIGHT()/2;
 
-        //new Bullet(bX,bY,tank.getDir(),tank.getGroup());
+        new Bullet(bX,bY,tank.getDir(),tank.getGroup());
 
         //todo Bug? new Bullet把自己加了一遍
-        GameModel.getInstance().add(
-                new RectDecorator(
-                        new TailDecotator(
-                                new Bullet(bX, bY, tank.getDir(), tank.getGroup()))));
+//        GameModel.getInstance().add(
+//                new RectDecorator(
+//                        new TailDecotator(
+//                                new Bullet(bX, bY, tank.getDir(), tank.getGroup()))));
 
         if(tank.getGroup() == Group.GOOD) {
             new Thread(()->new Audio("audio/tank_fire.wav").play()).start();

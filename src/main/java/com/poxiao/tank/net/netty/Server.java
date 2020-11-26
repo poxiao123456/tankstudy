@@ -35,7 +35,9 @@ public class Server {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pl = ch.pipeline();
-                            pl.addLast(new TankMsgDecoder())
+                            pl
+                                    //.addLast(new TankJoinMsgEncoder())
+                                    .addLast(new TankJoinMsgDecoder())
                                     .addLast(new ServerChildHandler());
                         }
                     })
@@ -72,7 +74,7 @@ class ServerChildHandler extends ChannelInboundHandlerAdapter { //SimpleChannleI
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
-            TankMsg tm = (TankMsg)msg;
+            TankJoinMsg tm = (TankJoinMsg)msg;
             ServerFrame.INSTANCE.updateServerMsg("server receive msg!---"+getClientIp(ctx)+"---"+tm.toString());
         } finally {
             ReferenceCountUtil.release(msg);

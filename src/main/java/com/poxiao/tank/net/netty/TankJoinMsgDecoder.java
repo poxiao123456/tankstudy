@@ -17,7 +17,7 @@ public class TankJoinMsgDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        if(in.readableBytes() < 148) {
+        if(in.readableBytes() < 33) {
             return; //TCP
         }
 

@@ -1,5 +1,7 @@
 package com.poxiao.tank.net.netty;
 
+import com.poxiao.tank.enums.Dir;
+import com.poxiao.tank.enums.Group;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -8,6 +10,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.ReferenceCountUtil;
+
+import java.util.UUID;
 
 /**
  * @author qq
@@ -73,7 +77,8 @@ class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline()
-                .addLast(new TankMsgEncoder())
+                .addLast(new TankJoinMsgEncoder())
+                //.addLast(new TankJoinMsgDecoder())
                 .addLast(new ClientHandler());
     }
 
@@ -103,7 +108,8 @@ class ClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        TankMsg tankMsg = new TankMsg(5, 8);
+        //TankMsg tankMsg = new TankMsg(5, 8);
+        TankJoinMsg tankMsg = new TankJoinMsg(5,8, Dir.UP,true, Group.GOOD, UUID.randomUUID());
         ctx.writeAndFlush(tankMsg);
         ServerFrame.INSTANCE.updateClientMsg("client send msg!---"+ctx.channel().localAddress().toString()+"---"+tankMsg);
     }

@@ -78,7 +78,7 @@ class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline()
                 .addLast(new TankJoinMsgEncoder())
-                //.addLast(new TankJoinMsgDecoder())
+                .addLast(new TankJoinMsgDecoder())
                 .addLast(new ClientHandler());
     }
 
@@ -88,22 +88,24 @@ class ClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = null;
-        try {
-            buf = (ByteBuf) msg;
-            byte[] bytes = new byte[buf.readableBytes()];
-            buf.getBytes(buf.readerIndex(), bytes);
-            String msgAccepted = new String(bytes);
-            ServerFrame.INSTANCE.updateClientMsg("client receive msg---"+ctx.channel().localAddress().toString()+"---"+msgAccepted);
-            // System.out.println(buf);
-            // System.out.println(buf.refCnt());
-        } finally {
-            if (buf != null) {
+//        ByteBuf buf = null;
+//        try {
+//            buf = (ByteBuf) msg;
+//            byte[] bytes = new byte[buf.readableBytes()];
+//            buf.getBytes(buf.readerIndex(), bytes);
+//            String msgAccepted = new String(bytes);
+//            ServerFrame.INSTANCE.updateClientMsg("client receive msg---"+ctx.channel().localAddress().toString()+"---"+msgAccepted);
+//            // System.out.println(buf);
+//            // System.out.println(buf.refCnt());
+//        } finally {
+//            if (buf != null) {
+//
+//                ReferenceCountUtil.release(buf);
+//            }
+//            // System.out.println(buf.refCnt());
+//        }
 
-                ReferenceCountUtil.release(buf);
-            }
-            // System.out.println(buf.refCnt());
-        }
+        ServerFrame.INSTANCE.updateClientMsg("client receive msg---"+ctx.channel().localAddress().toString()+"---"+msg);
     }
 
     @Override

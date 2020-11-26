@@ -14,6 +14,7 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * @author qinqi
@@ -28,6 +29,7 @@ public class Tank extends GameObject {
     private Group group = Group.BAD;
     private Rectangle rectangle = new Rectangle();
     private FireStrategy fireStrategy;
+    private UUID id = UUID.randomUUID();
     private static int HEIGHT = ResourceMgr.goodTankU.getHeight();
     private static int WIDTH = ResourceMgr.goodTankU.getWidth();
     private Random random = new Random();

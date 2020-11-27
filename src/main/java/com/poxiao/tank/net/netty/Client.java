@@ -1,17 +1,11 @@
 package com.poxiao.tank.net.netty;
 
-import com.poxiao.tank.enums.Dir;
-import com.poxiao.tank.enums.Group;
+import com.poxiao.tank.GameModel;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.ReferenceCountUtil;
-
-import java.util.UUID;
 
 /**
  * @author qq
@@ -19,7 +13,15 @@ import java.util.UUID;
  */
 public class Client {
 
+
+    int i = 0;
+
+    public static final Client INSTANCE = new Client();
+
     private Channel channel = null;
+
+    public Client() {
+    }
 
     public void connect() {
         EventLoopGroup group = new NioEventLoopGroup(1);
@@ -37,9 +39,9 @@ public class Client {
                 @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
                     if (!future.isSuccess()) {
-                        ServerFrame.INSTANCE.updateClientMsg("client not connected!---"+future.channel().localAddress().toString());
+                        ServerFrame.INSTANCE.updateClientMsg((i++)+":client not connected!---"+future.channel().localAddress().toString());
                     } else {
-                        ServerFrame.INSTANCE.updateClientMsg("client connected!---"+future.channel().localAddress().toString());
+                        ServerFrame.INSTANCE.updateClientMsg((i++)+":client connected!---"+future.channel().localAddress().toString());
                         // initialize the channel
                         channel = future.channel();
                     }
@@ -49,6 +51,7 @@ public class Client {
             f.sync();
             // wait until close
             f.channel().closeFuture().sync();
+            System.out.println("connection closed!");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -56,9 +59,8 @@ public class Client {
         }
     }
 
-    public void send(String msg) {
-        ByteBuf buf = Unpooled.copiedBuffer(msg.getBytes());
-        channel.writeAndFlush(buf);
+    public void send(Msg msg) {
+        channel.writeAndFlush(msg);
     }
 
     public static void main(String[] args) throws Exception {
@@ -67,7 +69,7 @@ public class Client {
     }
 
     public void closeConnect() {
-        this.send("_bye_");
+        //this.send("_bye_");
         //channel.close();
     }
 }
@@ -77,42 +79,25 @@ class ClientChannelInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline()
-                .addLast(new TankJoinMsgEncoder())
-                .addLast(new TankJoinMsgDecoder())
+                .addLast(new MsgEncoder())
+                .addLast(new MsgDecoder())
                 .addLast(new ClientHandler());
     }
 
 }
 
-class ClientHandler extends ChannelInboundHandlerAdapter {
+/**
+ * SimpleChannelInboundHandler可以指定消息类型
+ */
+class ClientHandler extends SimpleChannelInboundHandler<Msg> {
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-//        ByteBuf buf = null;
-//        try {
-//            buf = (ByteBuf) msg;
-//            byte[] bytes = new byte[buf.readableBytes()];
-//            buf.getBytes(buf.readerIndex(), bytes);
-//            String msgAccepted = new String(bytes);
-//            ServerFrame.INSTANCE.updateClientMsg("client receive msg---"+ctx.channel().localAddress().toString()+"---"+msgAccepted);
-//            // System.out.println(buf);
-//            // System.out.println(buf.refCnt());
-//        } finally {
-//            if (buf != null) {
-//
-//                ReferenceCountUtil.release(buf);
-//            }
-//            // System.out.println(buf.refCnt());
-//        }
-
-        ServerFrame.INSTANCE.updateClientMsg("client receive msg---"+ctx.channel().localAddress().toString()+"---"+msg);
+    public void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {
+        msg.handle();
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        //TankMsg tankMsg = new TankMsg(5, 8);
-        TankJoinMsg tankMsg = new TankJoinMsg(5,8, Dir.UP,true, Group.GOOD, UUID.randomUUID());
-        ctx.writeAndFlush(tankMsg);
-        ServerFrame.INSTANCE.updateClientMsg("client send msg!---"+ctx.channel().localAddress().toString()+"---"+tankMsg);
+        ctx.writeAndFlush(new TankJoinMsg(GameModel.getInstance().getMainTank()));
     }
 }

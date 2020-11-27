@@ -1,5 +1,9 @@
 package com.poxiao.tank;
 import com.poxiao.tank.enums.Dir;
+import com.poxiao.tank.net.netty.Client;
+import com.poxiao.tank.net.netty.TankDirChangedMsg;
+import com.poxiao.tank.net.netty.TankStartMovingMsg;
+import com.poxiao.tank.net.netty.TankStopMsg;
 import com.poxiao.tank.util.Audio;
 
 import	java.awt.event.KeyAdapter;
@@ -131,26 +135,37 @@ public class TankFrame extends Frame {
         }
 
         private void setMainTankDir() {
-            setTankMoving();
-            if (bU) {
-                gm.getMainTank().setDir(Dir.UP);
-            }
-            if (bD) {
-                gm.getMainTank().setDir(Dir.DOWN);
-            }
-            if (bL) {
-                gm.getMainTank().setDir(Dir.LEFT);
-            }
-            if (bR) {
-                gm.getMainTank().setDir(Dir.RIGHT);
-            }
-        }
 
-        private void setTankMoving() {
-            if (!bU && !bD && !bL && !bR) {
+            //save the old dir
+            Dir dir = gm.getMainTank().getDir();
+
+            if (!bL && !bU && !bR && !bD) {
                 gm.getMainTank().setMoving(false);
-            }else {
+                Client.INSTANCE.send(new TankStopMsg(gm.getMainTank()));
+            } else {
+                if (bL) {
+                    gm.getMainTank().setDir(Dir.LEFT);
+                }
+                if (bU) {
+                    gm.getMainTank().setDir(Dir.UP);
+                }
+                if (bR) {
+                    gm.getMainTank().setDir(Dir.RIGHT);
+                }
+                if (bD) {
+
+                    gm.getMainTank().setDir(Dir.DOWN);
+                }
+                //发出坦克移动的消息
+                if(!gm.getMainTank().isMoving()) {
+                    Client.INSTANCE.send(new TankStartMovingMsg(gm.getMainTank()));
+                }
                 gm.getMainTank().setMoving(true);
+
+                if(dir != gm.getMainTank().getDir()) {
+                    Client.INSTANCE.send(new TankDirChangedMsg(gm.getMainTank()));
+                }
+
             }
         }
     }

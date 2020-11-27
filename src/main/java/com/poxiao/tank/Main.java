@@ -1,5 +1,6 @@
 package com.poxiao.tank;
 
+import com.poxiao.tank.net.netty.Client;
 import com.poxiao.tank.util.Audio;
 
 /**
@@ -11,9 +12,18 @@ public class Main {
 
         new Thread(()->new Audio("audio/war1.wav").loop()).start();
 
-        while(true) {
-            Thread.sleep(25);
-            TankFrame.getInstance().repaint();
-        }
+        new Thread(()-> {
+            while(true) {
+                try {
+                    Thread.sleep(25);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                TankFrame.getInstance().repaint();
+            }
+        }).start();
+
+        //or you can new a thread to run this
+        Client.INSTANCE.connect();
     }
 }

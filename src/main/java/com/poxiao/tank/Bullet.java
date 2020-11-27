@@ -5,6 +5,7 @@ import com.poxiao.tank.enums.Group;
 import com.poxiao.tank.util.ResourceMgr;
 
 import java.awt.*;
+import java.util.UUID;
 
 /**
  * @author qq
@@ -12,6 +13,8 @@ import java.awt.*;
  */
 public class Bullet extends GameObject {
 
+    private UUID playerId;
+    private UUID id = UUID.randomUUID();
     private static final int SPEED = 6;
     private Dir dir;
     private Group group = Group.BAD;
@@ -20,6 +23,21 @@ public class Bullet extends GameObject {
     private static int HEIGHT = ResourceMgr.bulletD.getHeight();
 
     public Bullet() {
+    }
+
+    public Bullet(UUID playerId,int x, int y, Dir dir,Group group) {
+        this.playerId = playerId;
+        this.x = x;
+        this.y = y;
+        this.dir = dir;
+        this.group = group;
+
+        rectangle.x = x;
+        rectangle.y = y;
+        rectangle.width = WIDTH;
+        rectangle.height = HEIGHT;
+
+        //GameModel.getInstance().add(this);
     }
 
     public Bullet(int x, int y, Dir dir,Group group) {
@@ -33,9 +51,25 @@ public class Bullet extends GameObject {
         rectangle.width = WIDTH;
         rectangle.height = HEIGHT;
 
-        GameModel.getInstance().add(this);
+        //GameModel.getInstance().add(this);
     }
 
+
+    public UUID getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(UUID playerId) {
+        this.playerId = playerId;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
 
     public Rectangle getRectangle() {
         return rectangle;
@@ -152,7 +186,8 @@ public class Bullet extends GameObject {
     }
 
     public void die() {
-        GameModel.getInstance().remove(this);
+        //GameModel.getInstance().remove(this);
+        GameModel.getInstance().bullets.remove(this);
     }
 
 }

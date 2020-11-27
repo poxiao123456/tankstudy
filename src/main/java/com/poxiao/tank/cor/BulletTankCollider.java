@@ -4,6 +4,8 @@ import com.poxiao.tank.Bullet;
 import com.poxiao.tank.Explode;
 import com.poxiao.tank.GameObject;
 import com.poxiao.tank.Tank;
+import com.poxiao.tank.net.netty.Client;
+import com.poxiao.tank.net.netty.TankDieMsg;
 
 /**
  * @author qq
@@ -22,12 +24,18 @@ public class BulletTankCollider implements Collider{
                 return true;
             }
 
+
+            if(b.getPlayerId().equals(t.getId())) {
+                return true;
+            }
+
             if(b.getRectangle().intersects(t.getRectangle())) {
                 t.die();
                 b.die();
                 int eX = t.getX() + Tank.getWIDTH()/2 - Explode.getWIDTH()/2;
                 int eY = t.getY() + Tank.getHEIGHT()/2 - Explode.getHEIGHT()/2;
                 new Explode(eX, eY);
+                Client.INSTANCE.send(new TankDieMsg(t.getId()));
                 return false;
             }
 

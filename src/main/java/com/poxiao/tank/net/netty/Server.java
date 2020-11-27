@@ -16,6 +16,8 @@ import io.netty.util.concurrent.GlobalEventExecutor;
  */
 public class Server {
 
+    int i = 0;
+
     public static void main(String[] args){
         Server server = new Server();
         server.serverStart();
@@ -36,18 +38,18 @@ public class Server {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pl = ch.pipeline();
                             pl
-                                    .addLast(new TankJoinMsgEncoder())
-                                    .addLast(new TankJoinMsgDecoder())
+                                    .addLast(new MsgEncoder())
+                                    .addLast(new MsgDecoder())
                                     .addLast(new ServerChildHandler());
                         }
                     })
                     .bind(8888)
                     .sync();
 
-            ServerFrame.INSTANCE.updateServerMsg("server started!");
+            ServerFrame.INSTANCE.updateServerMsg((i++)+":server started!");
 
             f.channel().closeFuture().sync(); //close()->ChannelFuture
-            ServerFrame.INSTANCE.updateServerMsg("server closed!");
+            ServerFrame.INSTANCE.updateServerMsg((i++)+":server closed!");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -57,36 +59,37 @@ public class Server {
     }
 
 
-}
+    class ServerChildHandler extends ChannelInboundHandlerAdapter { //SimpleChannleInboundHandler Codec
 
-class ServerChildHandler extends ChannelInboundHandlerAdapter { //SimpleChannleInboundHandler Codec
+        @Override
+        public void channelActive(ChannelHandlerContext ctx) throws Exception {
+            Server.clients.add(ctx.channel());
+            ServerFrame.INSTANCE.updateServerMsg((i++)+":client online!---"+getClientIp(ctx));
+        }
 
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        Server.clients.add(ctx.channel());
-        ServerFrame.INSTANCE.updateServerMsg("client online!---"+getClientIp(ctx));
-    }
+        private String getClientIp(ChannelHandlerContext ctx) {
+            return ctx.channel().remoteAddress().toString();
+        }
 
-    private String getClientIp(ChannelHandlerContext ctx) {
-        return ctx.channel().remoteAddress().toString();
-    }
-
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        try {
-            TankJoinMsg tm = (TankJoinMsg)msg;
-            ServerFrame.INSTANCE.updateServerMsg("server receive msg!---"+getClientIp(ctx)+"---"+tm.toString());
+        @Override
+        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+            ServerFrame.INSTANCE.updateServerMsg((i++)+":receive client msg---"+msg.toString());
             Server.clients.writeAndFlush(msg);
-        } finally {
-            ReferenceCountUtil.release(msg);
+//        try {
+//            TankJoinMsg tm = (TankJoinMsg)msg;
+//            ServerFrame.INSTANCE.updateServerMsg("server receive msg!---"+getClientIp(ctx)+"---"+tm.toString());
+//        } finally {
+//            ReferenceCountUtil.release(msg);
+//        }
+        }
+
+        @Override
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+            cause.printStackTrace();
+            Server.clients.remove(ctx.channel());
+            ServerFrame.INSTANCE.updateServerMsg((i++)+":client happen error!---"+getClientIp(ctx)+"---"+cause.getMessage());
+            ctx.close();
         }
     }
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        cause.printStackTrace();
-        Server.clients.remove(ctx.channel());
-        ServerFrame.INSTANCE.updateServerMsg("client happen error!---"+getClientIp(ctx)+"---"+cause.getMessage());
-        ctx.close();
-    }
 }

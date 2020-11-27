@@ -48,9 +48,9 @@ public class ServerFrame extends Frame{
             ServerFrame.INSTANCE.server.serverStart();
         }).start();
 
-        new Thread(() -> {
-            ServerFrame.INSTANCE.client.connect();
-        }).start();
+//        new Thread(() -> {
+//            ServerFrame.INSTANCE.client.connect();
+//        }).start();
     }
 
     public void updateServerMsg(String string) {

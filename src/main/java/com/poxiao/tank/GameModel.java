@@ -9,7 +9,7 @@ import com.poxiao.tank.util.PropertyMgr;
 
 import java.awt.*;
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -23,6 +23,10 @@ public class GameModel {
     private List<GameObject> objects = new ArrayList<>();
     private ColliderChain chain = new ColliderChain();
     public GameFactory gf = new DefaultFactory();
+    Random r = new Random();
+
+    Map<UUID,Tank> tanks = new HashMap<>();
+    List<Bullet> bullets = new ArrayList<>();
 
     static {
         INSTANCE.init();
@@ -33,20 +37,32 @@ public class GameModel {
 
     private void init() {
         // 初始化主战坦克
-        myTank = new Tank(200, 400, Dir.DOWN, Group.GOOD);
+        myTank = new Tank(r.nextInt(TankFrame.getGameWidth()), r.nextInt(TankFrame.getGameHeight()), Dir.DOWN, Group.GOOD);
 
-        int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
-
-        // 初始化敌方坦克
-        for (int i = 0; i < initTankCount; i++) {
-            new Tank(50 + i * 80, 200, Dir.DOWN, Group.BAD);
-        }
+//        int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
+//
+//        // 初始化敌方坦克
+//        for (int i = 0; i < initTankCount; i++) {
+//            new Tank(50 + i * 80, 200, Dir.DOWN, Group.BAD);
+//        }
 
         // 初始化墙
         add(new Wall(150, 150, 200, 50));
         add(new Wall(550, 150, 200, 50));
         add(new Wall(300, 300, 50, 200));
         add(new Wall(550, 300, 50, 200));
+    }
+
+    public void addTank(Tank t) {
+        tanks.put(t.getId(), t);
+    }
+
+    public void addBullet(Bullet b) {
+        bullets.add(b);
+    }
+
+    public Tank findByUUID(UUID id) {
+        return tanks.get(id);
     }
 
     public static GameModel getInstance() {
@@ -67,6 +83,12 @@ public class GameModel {
 
     public void paint(Graphics g) {
         myTank.paint(g);
+
+        tanks.values().stream().forEach((e)->e.paint(g));
+
+        for (int i = 0; i < bullets.size(); i++) {
+            bullets.get(i).paint(g);
+        }
 
         for (int i = 0; i < objects.size(); i++) {
             objects.get(i).paint(g);

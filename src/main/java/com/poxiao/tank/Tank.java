@@ -2,6 +2,7 @@ package com.poxiao.tank;
 
 import com.poxiao.tank.enums.Dir;
 import com.poxiao.tank.enums.Group;
+import com.poxiao.tank.net.netty.TankJoinMsg;
 import com.poxiao.tank.observer.TankFireEvent;
 import com.poxiao.tank.observer.TankFireHandler;
 import com.poxiao.tank.observer.TankFireOberver;
@@ -25,11 +26,12 @@ public class Tank extends GameObject {
     private int oldX, oldY;
     private static final int SPEED = 2;
     private Dir dir;
-    private boolean moving = true;
+    private boolean moving = false;
     private Group group = Group.BAD;
     private Rectangle rectangle = new Rectangle();
     private FireStrategy fireStrategy;
     private UUID id = UUID.randomUUID();
+    private boolean living = true;
     private static int HEIGHT = ResourceMgr.goodTankU.getHeight();
     private static int WIDTH = ResourceMgr.goodTankU.getWidth();
     private Random random = new Random();
@@ -64,6 +66,37 @@ public class Tank extends GameObject {
         }
 
         GameModel.getInstance().add(this);
+    }
+
+    public Tank(TankJoinMsg msg) {
+        this.x = msg.x;
+        this.y = msg.y;
+        this.dir = msg.dir;
+        this.moving = msg.moving;
+        this.group = msg.group;
+        this.id = msg.id;
+
+        rectangle.x = this.x;
+        rectangle.y = this.y;
+        rectangle.width = WIDTH;
+        rectangle.height = HEIGHT;
+    }
+
+
+    public boolean isLiving() {
+        return living;
+    }
+
+    public void setLiving(boolean living) {
+        this.living = living;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public static int getHEIGHT() {
@@ -132,6 +165,24 @@ public class Tank extends GameObject {
 
     @Override
     public void paint(Graphics g) {
+        //uuid on head
+        Color c = g.getColor();
+        g.setColor(Color.YELLOW);
+        g.drawString(id.toString(), this.x, this.y - 20);
+        g.drawString("live=" + living, x, y-10);
+        g.setColor(c);
+
+        //draw a rect if dead!
+        if(!living) {
+            moving = false;
+            Color cc = g.getColor();
+            g.setColor(Color.WHITE);
+            g.drawRect(x, y, WIDTH, HEIGHT);
+            g.setColor(cc);
+            return;
+        }
+
+
         int nextInt = random.nextInt(2);
         switch(dir) {
             case LEFT:
@@ -175,6 +226,16 @@ public class Tank extends GameObject {
     }
 
     private void move() {
+
+        if(!living) {
+            return;
+        }
+
+        if(!moving) {
+            return ;
+        }
+
+
         //记录移动之前的位置
         oldX = x;
         oldY = y;
@@ -234,7 +295,10 @@ public class Tank extends GameObject {
     }
 
     public void die() {
-        GameModel.getInstance().remove(this);
+        //GameModel.getInstance().remove(this);
+        this.living = false;
+//        int eX = this.getX() + Tank.WIDTH/2 - Explode.getWIDTH()/2;
+//        int eY = this.getY() + Tank.HEIGHT/2 - Explode.getHEIGHT()/2;
     }
 
     public void stop() {

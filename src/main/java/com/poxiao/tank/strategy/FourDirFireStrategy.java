@@ -6,6 +6,8 @@ import com.poxiao.tank.GameObject;
 import com.poxiao.tank.enums.Dir;
 import com.poxiao.tank.enums.Group;
 import com.poxiao.tank.Tank;
+import com.poxiao.tank.net.netty.BulletNewMsg;
+import com.poxiao.tank.net.netty.Client;
 import com.poxiao.tank.util.Audio;
 
 /**
@@ -21,7 +23,11 @@ public class FourDirFireStrategy implements FireStrategy{
 
         Dir[] dirs = Dir.values();
         for (Dir dir : dirs) {
-            GameModel.getInstance().gf.createBullet(bX, bY, dir, tank.getGroup());
+//            Bullet bullet = (Bullet)GameModel.getInstance().gf.createBullet(bX, bY, dir, tank.getGroup());
+            Bullet bullet = new Bullet(tank.getId(), bX, bY, dir, tank.getGroup());
+            GameModel.getInstance().addBullet(bullet);
+
+            Client.INSTANCE.send(new BulletNewMsg(bullet));
         }
 
         if(tank.getGroup() == Group.GOOD) {
